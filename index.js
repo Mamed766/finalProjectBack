@@ -5,6 +5,7 @@ const cors = require("cors");
 const connection = require("./db/db");
 const path = require("path");
 const router = express.Router();
+const fashionRouter = require("./routes/FashionRouters");
 
 //database connection
 connection();
@@ -18,6 +19,9 @@ app.use(
   })
 );
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+//routes
+app.use("/api/v2/fashions", fashionRouter);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
