@@ -35,7 +35,7 @@ const createFashion = async (req, res) => {
       req.files && req.files.fashionImage2
         ? req.files.fashionImage2[0].path
         : null;
-    const { fashionType, fashionWhom } = req.body;
+    const { fashionType, fashionWhom, fashionType2, fashionWhom2 } = req.body;
 
     if (!fashionImage || !fashionImage2) {
       return res.status(400).json({
@@ -48,7 +48,9 @@ const createFashion = async (req, res) => {
       fashionImage,
       fashionImage2,
       fashionType,
+      fashionType2,
       fashionWhom,
+      fashionWhom2,
     });
 
     return res.status(201).json({
@@ -84,7 +86,7 @@ const updateFashion = async (req, res, next) => {
       req.files && req.files.fashionImage2
         ? req.files.fashionImage2[0].path
         : null;
-    const { fashionType, fashionWhom } = req.body;
+    const { fashionType, fashionWhom, fashionWhom2, fashionType2 } = req.body;
 
     const fashion = await Fashion.findById(req.params.id);
 
@@ -93,10 +95,12 @@ const updateFashion = async (req, res, next) => {
     }
 
     const updatedData = {
-      fashionImage: fashionImage || fashion.fashionImage, // Eğer yeni dosya varsa onu kullan, yoksa eski dosya
+      fashionImage: fashionImage || fashion.fashionImage,
       fashionImage2: fashionImage2 || fashion.fashionImage2,
       fashionType: fashionType || fashion.fashionType,
       fashionWhom: fashionWhom || fashion.fashionWhom,
+      fashionType2: fashionType2 || fashion.fashionType2,
+      fashionWhom2: fashionWhom2 || fashion.fashionWhom2,
     };
 
     const updatedFashion = await Fashion.findByIdAndUpdate(

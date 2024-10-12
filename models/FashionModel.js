@@ -13,7 +13,15 @@ const FashionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  fashionType2: {
+    type: String,
+    required: true,
+  },
   fashionWhom: {
+    type: String,
+    required: true,
+  },
+  fashionWhom2: {
     type: String,
     required: true,
   },
