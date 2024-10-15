@@ -8,6 +8,7 @@ const router = express.Router();
 const userRoutes = require("./routes/users");
 const userRoute = require("./routes/userRoutes");
 const authRouters = require("./routes/auth");
+const suitRouter = require("./routes/SuitRouters");
 const fashionRouter = require("./routes/FashionRouters");
 
 //database connection
@@ -32,6 +33,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //routes
 app.use("/api/v2/fashions", fashionRouter);
+app.use("/api/v2/suits", suitRouter);
 app.use("/api/v2/users", userRoutes);
 app.use("/api/v2/userProfile", userRoute);
 app.use("/api/v2/auth", authRouters);
