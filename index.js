@@ -10,7 +10,8 @@ const userRoute = require("./routes/userRoutes");
 const authRouters = require("./routes/auth");
 const suitRouter = require("./routes/SuitRouters");
 const fashionRouter = require("./routes/FashionRouters");
-
+const cartRouter = require("./routes/cart");
+const { authMiddleware } = require("./middleware/middleware");
 //database connection
 connection();
 
@@ -37,6 +38,6 @@ app.use("/api/v2/suits", suitRouter);
 app.use("/api/v2/users", userRoutes);
 app.use("/api/v2/userProfile", userRoute);
 app.use("/api/v2/auth", authRouters);
-
+app.use("/api/v2/cart", authMiddleware, cartRouter);
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
