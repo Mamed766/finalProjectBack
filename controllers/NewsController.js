@@ -2,12 +2,33 @@ const News = require("../models/NewsModel");
 const { ErrorHandler } = require("../utils/ErrorHandler");
 
 const getAllNews = async (req, res, next) => {
+  const { page = 1, limit = 10 } = req.query;
+
   try {
-    const news = await News.find();
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const totalNews = await News.countDocuments();
+    const totalPages = Math.ceil(totalNews / limitNumber);
+
+    const news = await News.find()
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
     if (!news.length) {
       return next(new ErrorHandler("No news found", 404));
     }
-    res.status(200).json({ success: true, news });
+
+    res.status(200).json({
+      success: true,
+      news,
+      pagination: {
+        totalNews,
+        totalPages,
+        currentPage: pageNumber,
+        limit: limitNumber,
+      },
+    });
   } catch (error) {
     next(error);
   }
