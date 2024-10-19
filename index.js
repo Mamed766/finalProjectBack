@@ -12,6 +12,7 @@ const suitRouter = require("./routes/SuitRouters");
 const fashionRouter = require("./routes/FashionRouters");
 const cartRouter = require("./routes/cart");
 const wishlistRouter = require("./routes/wishlist");
+const newsRouter = require("./routes/NewsRouters");
 const { authMiddleware } = require("./middleware/middleware");
 //database connection
 connection();
@@ -35,6 +36,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //routes
 app.use("/api/v2/fashions", fashionRouter);
+app.use("/api/v2/news", newsRouter);
 app.use("/api/v2/suits", suitRouter);
 app.use("/api/v2/users", userRoutes);
 app.use("/api/v2/userProfile", userRoute);
