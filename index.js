@@ -13,6 +13,7 @@ const fashionRouter = require("./routes/FashionRouters");
 const cartRouter = require("./routes/cart");
 const wishlistRouter = require("./routes/wishlist");
 const newsRouter = require("./routes/NewsRouters");
+const commentRouter = require("./routes/CommentRouters");
 const { authMiddleware } = require("./middleware/middleware");
 //database connection
 connection();
@@ -40,6 +41,7 @@ app.use("/api/v2/news", newsRouter);
 app.use("/api/v2/suits", suitRouter);
 app.use("/api/v2/users", userRoutes);
 app.use("/api/v2/userProfile", userRoute);
+app.use("/api/v2/comments", commentRouter);
 app.use("/api/v2/auth", authRouters);
 app.use("/api/v2/cart", authMiddleware, cartRouter);
 app.use("/api/v2/wishlist", authMiddleware, wishlistRouter);
