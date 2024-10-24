@@ -2,12 +2,69 @@ const Suit = require("../models/SuitSchema");
 const { ErrorHandler } = require("../utils/ErrorHandler");
 
 const getAllSuits = async (req, res, next) => {
-  try {
-    const suits = await Suit.find();
-    if (!suits.length) {
-      return next(new ErrorHandler("No suits found", 404));
+  const {
+    color,
+    size,
+    minPrice,
+    maxPrice,
+    page = 1,
+    limit = 10,
+    search,
+  } = req.query;
+
+  const filter = {};
+
+  // Filtering by color
+  if (color) {
+    const colorsArray = color.split(",").filter((c) => c.trim() !== "");
+    if (colorsArray.length > 0) {
+      filter.color = { $in: colorsArray };
     }
-    res.status(200).json({ success: true, suits });
+  }
+
+  // Filtering by size
+  if (size) {
+    filter.size = size;
+  }
+
+  // Filtering by price range
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) {
+      filter.price.$gte = parseFloat(minPrice);
+    }
+    if (maxPrice) {
+      filter.price.$lte = parseFloat(maxPrice);
+    }
+  }
+
+  // Search functionality
+  if (search && search.trim() !== "") {
+    const searchRegex = new RegExp(search, "i");
+    filter.$or = [{ title: searchRegex }, { desc: searchRegex }];
+  }
+
+  try {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const totalSuits = await Suit.countDocuments(filter);
+    const totalPages = Math.ceil(totalSuits / limitNumber);
+
+    const suits = await Suit.find(filter)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    res.status(200).json({
+      success: true,
+      suits,
+      pagination: {
+        totalSuits,
+        totalPages,
+        currentPage: pageNumber,
+        limit: limitNumber,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -31,7 +88,7 @@ const createSuit = async (req, res) => {
       req.files && req.files.image1 ? req.files.image1[0].path : null;
     const image2 =
       req.files && req.files.image2 ? req.files.image2[0].path : null;
-    const { title, price, rating, stock, size, color } = req.body;
+    const { title, price, rating, stock, size, color, desc } = req.body;
 
     if (!image1 || !image2) {
       return res.status(400).json({
@@ -42,11 +99,12 @@ const createSuit = async (req, res) => {
 
     const newSuit = await Suit.create({
       title,
+      desc,
       image1,
       image2,
-      price,
-      rating,
-      stock,
+      price: parseFloat(price),
+      rating: parseFloat(rating),
+      stock: parseInt(stock),
       size,
       color,
     });
@@ -81,7 +139,7 @@ const updateSuit = async (req, res, next) => {
       req.files && req.files.image1 ? req.files.image1[0].path : null;
     const image2 =
       req.files && req.files.image2 ? req.files.image2[0].path : null;
-    const { title, price, rating, stock, size, color } = req.body;
+    const { title, price, rating, stock, size, color, desc } = req.body;
 
     const suit = await Suit.findById(req.params.id);
 
@@ -93,11 +151,12 @@ const updateSuit = async (req, res, next) => {
       image1: image1 || suit.image1,
       image2: image2 || suit.image2,
       title: title || suit.title,
-      price: price || suit.price,
-      rating: rating || suit.rating,
-      stock: stock || suit.stock,
+      price: price ? parseFloat(price) : suit.price,
+      rating: rating ? parseFloat(rating) : suit.rating,
+      stock: stock ? parseInt(stock) : suit.stock,
       size: size || suit.size,
       color: color || suit.color,
+      desc: desc || suit.desc,
     };
 
     const updatedSuit = await Suit.findByIdAndUpdate(
