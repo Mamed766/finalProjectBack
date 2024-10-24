@@ -14,7 +14,6 @@ const getAllSuits = async (req, res, next) => {
 
   const filter = {};
 
-  // Filtering by color
   if (color) {
     const colorsArray = color.split(",").filter((c) => c.trim() !== "");
     if (colorsArray.length > 0) {
@@ -22,12 +21,10 @@ const getAllSuits = async (req, res, next) => {
     }
   }
 
-  // Filtering by size
   if (size) {
     filter.size = size;
   }
 
-  // Filtering by price range
   if (minPrice || maxPrice) {
     filter.price = {};
     if (minPrice) {
@@ -38,7 +35,6 @@ const getAllSuits = async (req, res, next) => {
     }
   }
 
-  // Search functionality
   if (search && search.trim() !== "") {
     const searchRegex = new RegExp(search, "i");
     filter.$or = [{ title: searchRegex }, { desc: searchRegex }];
