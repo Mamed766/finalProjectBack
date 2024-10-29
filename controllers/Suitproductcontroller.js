@@ -9,6 +9,7 @@ const getAllSuits = async (req, res, next) => {
     maxPrice,
     page = 1,
     limit = 10,
+    status,
     search,
   } = req.query;
 
@@ -38,6 +39,10 @@ const getAllSuits = async (req, res, next) => {
   if (search && search.trim() !== "") {
     const searchRegex = new RegExp(search, "i");
     filter.$or = [{ title: searchRegex }, { desc: searchRegex }];
+  }
+
+  if (status) {
+    filter.status = status;
   }
 
   try {
@@ -84,7 +89,7 @@ const createSuit = async (req, res) => {
       req.files && req.files.image1 ? req.files.image1[0].path : null;
     const image2 =
       req.files && req.files.image2 ? req.files.image2[0].path : null;
-    const { title, price, rating, stock, size, color, desc } = req.body;
+    const { title, price, rating, stock, size, color, desc, status } = req.body;
 
     if (!image1 || !image2) {
       return res.status(400).json({
@@ -103,6 +108,7 @@ const createSuit = async (req, res) => {
       stock: parseInt(stock),
       size,
       color,
+      status: status || "pending",
     });
 
     return res.status(201).json({
@@ -135,7 +141,7 @@ const updateSuit = async (req, res, next) => {
       req.files && req.files.image1 ? req.files.image1[0].path : null;
     const image2 =
       req.files && req.files.image2 ? req.files.image2[0].path : null;
-    const { title, price, rating, stock, size, color, desc } = req.body;
+    const { title, price, rating, stock, size, color, desc, status } = req.body;
 
     const suit = await Suit.findById(req.params.id);
 
@@ -153,6 +159,7 @@ const updateSuit = async (req, res, next) => {
       size: size || suit.size,
       color: color || suit.color,
       desc: desc || suit.desc,
+      status: status || suit.status,
     };
 
     const updatedSuit = await Suit.findByIdAndUpdate(

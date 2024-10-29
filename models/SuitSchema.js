@@ -37,6 +37,11 @@ const SuitSchema = new mongoose.Schema({
     enum: ["pink", "purple", "red", "yellow"],
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
