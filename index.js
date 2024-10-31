@@ -14,6 +14,7 @@ const cartRouter = require("./routes/cart");
 const wishlistRouter = require("./routes/wishlist");
 const newsRouter = require("./routes/NewsRouters");
 const commentRouter = require("./routes/CommentRouters");
+const checkoutRouter = require("./routes/Checkout");
 const { authMiddleware } = require("./middleware/middleware");
 //database connection
 connection();
@@ -29,7 +30,7 @@ app.use(
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:5173"],
     credentials: true,
   })
 );
@@ -45,6 +46,7 @@ app.use("/api/v2/comments", commentRouter);
 app.use("/api/v2/auth", authRouters);
 app.use("/api/v2/cart", authMiddleware, cartRouter);
 app.use("/api/v2/wishlist", authMiddleware, wishlistRouter);
+app.use("/api/v2/checkout", authMiddleware, checkoutRouter);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
