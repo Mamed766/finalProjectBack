@@ -2,7 +2,7 @@ const News = require("../models/NewsModel");
 const { ErrorHandler } = require("../utils/ErrorHandler");
 
 const getAllNews = async (req, res, next) => {
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 30 } = req.query;
 
   try {
     const pageNumber = parseInt(page, 10);

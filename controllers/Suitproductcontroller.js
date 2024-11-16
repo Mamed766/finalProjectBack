@@ -8,7 +8,7 @@ const getAllSuits = async (req, res, next) => {
     minPrice,
     maxPrice,
     page = 1,
-    limit = 10,
+    limit = 30,
     status,
     search,
   } = req.query;
